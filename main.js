@@ -536,18 +536,18 @@ const persona = new Lang.Class({
 	_showAbout: function() {
 
         // String arrays of the names of the people involved in the project
-        var authors = ["Thomas Siladi", "蓋橋　春"];
+        var authors = ["蓋橋　春"];
         var documenters = ["春　蓋橋", "ナナミ　蓋橋"];
 
         // Create the About dialog
         let aboutDialog = new Gtk.AboutDialog({ 
         	title: "PERSONA",
             program_name: "ユーザー管理のためのGTKベースのアプリケーション\nGNOME 3のJavaScriptで作られた。",
-            copyright: "コピーライト \xa9 2013 シァヂトーマスと蓋橋春",
+            copyright: "コピーライト \xa9 2013 蓋橋 春",
             authors: authors,
             documenters: documenters,
             website: "http://persona.futabashi.jp",
-            website_label: "http://persona.futabashi.jp" 
+            website_label: "Fake Website..." 
         });
 
         // Attach the About dialog to the window

@@ -239,7 +239,7 @@ const musicPlayer = new Lang.Class({
         let aboutDialog = new Gtk.AboutDialog({ 
         	title: "Music Player",
             program_name: "A Music Player for GNOME 3\nUsing GNOME 3 Javascript.",
-            copyright: "Copyright \xa9 2013 Thomas Siladi",
+            copyright: "Copyright \xa9 2013 蓋橋　春",
             authors: authors,
             documenters: documenters,
             website: "http://www.google.com",
