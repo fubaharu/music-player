@@ -70,7 +70,7 @@ const musicPlayer = new Lang.Class({
             window_position: Gtk.WindowPosition.CENTER,
             border_width: 0,
             title: "GNOME Music Player",
-			default_height: 100,
+			default_height: 600,
 			default_width: 1024
 		});
 
@@ -90,6 +90,7 @@ const musicPlayer = new Lang.Class({
 
 		this.selection = this._soundList.get_selection ();
 		this.selection.connect ('changed', Lang.bind (this, this._onSelectionChanged));
+		this._soundList.connect ('row_activated', Lang.bind (this, this._rowActivated));
 
         this._window.add(this._grid);
 		this._window.show_all();
@@ -175,27 +176,40 @@ const musicPlayer = new Lang.Class({
     },
 
     _onSelectionChanged: function() {
+    	/*
     	print("Selection has changed...");
 
     	this.sound.set_state(Gst.State.NULL);
     	let [ isSelected, model, iter ] = this.selection.get_selected();
     	this.sound.uri = this._listStore.get_value (iter, 1);
     	this.sound.set_state(Gst.State.PLAYING);
+       this._playButton.set_stock_id(Gtk.STOCK_MEDIA_PAUSE);
+       	*/
+    },
+    
+    _rowActivated: function() {
+		print("Selection has changed. Playing that \"other\" row.");
+
+		this.sound.set_state(Gst.State.NULL);
+		let [ isSelected, model, iter ] = this.selection.get_selected();
+		this.sound.uri = this._listStore.get_value (iter, 1);
+		this.sound.set_state(Gst.State.PLAYING);
+		this._playButton.set_stock_id(Gtk.STOCK_MEDIA_PAUSE);
     },
 
     // Open a File (, add it to playlist --> Later!!!) and play it.
     _openAction: function() {
-    	this.openDialog = new Gtk.FileChooserDialog ({ 
-			action: 1, 
-			select_multiple: false, 
-			local_only: false, 
-			modal: false 
-		});
+        this.openDialog = new Gtk.FileChooserDialog ({ 
+            action: 1, 
+            select_multiple: false, 
+            local_only: false, 
+            modal: false 
+        });
 	
-		this.openDialog.add_button(Gtk.STOCK_OPEN, Gtk.ResponseType.ACCEPT);
-		this.openDialog.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL);
+	   this.openDialog.add_button(Gtk.STOCK_OPEN, Gtk.ResponseType.ACCEPT);
+	   this.openDialog.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL);
 
-		var dialog = this.openDialog.run();
+	   var dialog = this.openDialog.run();
 		if (dialog == Gtk.ResponseType.ACCEPT) {
 			this._listStore.set (this._listStore.append(), [0, 1], [Gda.value_stringify (this.openDialog.get_filename()), Gda.value_stringify(this.openDialog.get_uri())]);
 			this.openDialog.destroy();
@@ -218,15 +232,30 @@ const musicPlayer = new Lang.Class({
     	if (this.sound.get_state(Gst.State.PLAYING)) {
     		this.sound.set_state(Gst.State.NULL);
     		print("Stopping sound...");
+         this._playButton.set_stock_id(Gtk.STOCK_MEDIA_PLAY);
     	}
     },
 
     _previousAction: function() {
-    	print("[WARNING] This still hasn't been implemented!");
+		print("[WARNING] This is still buggy! Trying to go back...");
+
+		this.sound.set_state(Gst.State.NULL);
+       let [ isSelected, model, iter ] = this.selection.get_selected();
+       this._listStore.iter_previous(iter);
+       this.selection.select_iter(iter);
+       this.sound.uri = this._listStore.get_value (iter, 1);
+       this.sound.set_state(Gst.State.PLAYING);
     },
 
     _nextAction: function() {
-    	print("[WARNING] This still hasn't been implemented!");
+    	 print("[WARNING] This is still buggy! Trying to go forward...");
+
+        this.sound.set_state(Gst.State.NULL);
+        let [ isSelected, model, iter ] = this.selection.get_selected();
+        this._listStore.iter_next(iter);
+        this.selection.select_iter(iter);
+        this.sound.uri = this._listStore.get_value (iter, 1);
+        this.sound.set_state(Gst.State.PLAYING);
     },
 
     _showAbout: function() {
